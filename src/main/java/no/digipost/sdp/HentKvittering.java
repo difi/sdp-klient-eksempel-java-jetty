@@ -13,6 +13,13 @@ public class HentKvittering implements Runnable {
 
     public static final int MILLIS_BETWEEN_RECEIPT_CHECKS_WHEN_EMPTY = (int) TimeUnit.MINUTES.toMillis(10);
 
+    /**
+     * Hvilken MPC-kø vi skal lytte på kvitteringer fra.
+     *
+     * Hvis det gjøres forsendelser med forskjellig prioritet må det lyttes på begge køene.
+     */
+    public static final Prioritet MPC_PRIORITY = Prioritet.NORMAL;
+
     private final SikkerDigitalPostKlient klient;
     private final SendBrevStatus sendBrevStatus;
 
@@ -37,7 +44,7 @@ public class HentKvittering implements Runnable {
     }
 
     private ForretningsKvittering hentKvitteringOgBekreftForrige(ForretningsKvittering forrigeKvittering) {
-        ForretningsKvittering forretningsKvittering = klient.hentKvitteringOgBekreftForrige(KvitteringForespoersel.builder(Prioritet.NORMAL).build(), forrigeKvittering);
+        ForretningsKvittering forretningsKvittering = klient.hentKvitteringOgBekreftForrige(KvitteringForespoersel.builder(MPC_PRIORITY).build(), forrigeKvittering);
 
         if (forretningsKvittering != null) {
             sendBrevStatus.kvittering(forretningsKvittering);

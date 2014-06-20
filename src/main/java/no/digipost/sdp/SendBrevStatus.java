@@ -8,6 +8,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Ekstremt forenklet håndtering av status på brevsending.
+ *
+ * I en reell brevsender vil dette være en nøkkelkomponent som håndterer alt rundt resultatet av sending av brev.
+ * Dette vil typisk inkludere oppdatering av status i database/fagsystem, automatisk feilhåndtering, rapportering til
+ * manuell feilhåndtering og så videre.
+ *
+ * Se <a href="http://begrep.difi.no/SikkerDigitalPost/forretningslag/avsender_tilstanddiagram">mulig tilstandsdiagram</a> for forsendelser.
+ */
 public class SendBrevStatus {
 
     private final HashMap<String, String> status;
@@ -21,22 +30,47 @@ public class SendBrevStatus {
         this.queue = queue;
     }
 
+    /**
+     * Kunne ikke sendes fordi sende-køa er full. Kan tyde på at det produseres brev med for høy hyppighet, eller at
+     * nettverksproblemer eller annen feil gjør at brev ikke kan sendes.
+     *
+     * Forsendelsen bør forsøkes på nytt senere.
+     */
     public void notSentDueToCapacity(Forsendelse forsendelse) {
         status.put(forsendelse.getKonversasjonsId(), "NotSentCapacity");
     }
 
+    /**
+     * Forsendelsen er lagt i sende-køa.
+     */
     public void addedToQueue(Forsendelse forsendelse) {
         status.put(forsendelse.getKonversasjonsId(), "AddedToQueue");
     }
 
+    /**
+     * Forsendelsen har blitt sendt til meldingsformidleren. Dersom det går urimelig lang tid før det mottas forretningskvittering
+     * på forsendelsen bør det håndteres i henhold til avtalen med sentralforvalter, som beskrevet i
+     * <a href="http://begrep.difi.no/SikkerDigitalPost/feilhandtering/Forretningsfeil">begrepskatalogen</a>.
+     */
     public void sent(Forsendelse forsendelse) {
         status.put(forsendelse.getKonversasjonsId(), "Sent");
     }
 
+    /**
+     * Sending til meldingsformidleren feilet. Exception bør undersøkes for å finne ut om forsendelsen skal prøves igjen automatisk
+     * eller markeres for manuell inspeksjon/feilhåndtering. Vil i praksis (nesten) alltid være en subklasse av {@link no.difi.sdp.client.domain.exceptions.SikkerDigitalPostException}.
+     *
+     * @see no.difi.sdp.client.domain.exceptions.SendException#getAntattSkyldig()
+     */
     public void feilet(Forsendelse forsendelse, Exception e) {
         status.put(forsendelse.getKonversasjonsId(), String.format("Exception: %s (%s)", e.getClass().getSimpleName(), e.getMessage()));
     }
 
+    /**
+     * <a href="http://begrep.difi.no/SikkerDigitalPost/meldinger/"Forretningskvittering</a> for en forsendelse. Det bør
+     * sjekkes hvilken subklasse av {@link no.difi.sdp.client.domain.kvittering.ForretningsKvittering} dette er og håndteres deretter.
+     * Håndteringen avhenger av avsenderens krav.
+     */
     public void kvittering(ForretningsKvittering forretningsKvittering) {
         status.put(forretningsKvittering.getKonversasjonsId(), forretningsKvittering.toString());
     }

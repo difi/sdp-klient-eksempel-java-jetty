@@ -9,6 +9,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Putter jobber i en kø for sending. Bør ha mekanismer for å sørge for å ikke produsere brev fortere enn de sendes.
+ */
 public class BrevProdusent implements Runnable {
 
     private final Forsendelseskilde forsendelseskilde;
@@ -41,12 +44,15 @@ public class BrevProdusent implements Runnable {
 
         running = true;
         while(running) {
+            // Hent forsendelse
             Forsendelse forsendelse = forsendelseskilde.lagBrev();
 
             if (workQueue.remainingCapacity() == 0) {
+                // Håndter eventuelt full kø
                 sendBrevStatus.notSentDueToCapacity(forsendelse);
             }
             else {
+                // Legg brev til sending
                 executor.submit(new SendBrev(klient, sendBrevStatus, forsendelse));
                 sendBrevStatus.addedToQueue(forsendelse);
             }

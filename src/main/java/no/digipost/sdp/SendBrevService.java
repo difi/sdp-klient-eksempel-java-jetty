@@ -4,8 +4,6 @@ import no.difi.sdp.client.KlientKonfigurasjon;
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Avsender;
 import no.difi.sdp.client.domain.Noekkelpar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.security.KeyStore;
 
@@ -18,13 +16,14 @@ public class SendBrevService {
     private final Forsendelseskilde forsendelseskilde;
     private final SendBrevStatus sendBrevStatus;
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private BrevProdusent brevProdusent;
 
     public SendBrevService() {
         Noekkelpar noekkelpar;
         try {
             KeyStore keyStore = KeyStore.getInstance("JCEKS");
+
+            // Last keystore som inneholder sertifikatkjede og privatnøkkel for avsender, samt eventuelt trust store for rotsertifikat brukt av meldingsformidler.
             keyStore.load(this.getClass().getClassLoader().getResourceAsStream("./keystore.jce"), "abcd1234".toCharArray());
             noekkelpar = Noekkelpar.fraKeyStore(keyStore, "meldingsformidler", "abcd1234");
         }
@@ -42,14 +41,6 @@ public class SendBrevService {
         new Thread(new HentKvittering(klient, sendBrevStatus), "ReceiptPollingThread").start();
     }
 
-    public String getStatus() {
-        return this.sendBrevStatus.getStatusString();
-    }
-
-    public String getQueueStatus() {
-        return this.sendBrevStatus.getQueueStatusString();
-    }
-
     public void startSending(Integer sendIntervalMs) {
         brevProdusent.setSendInterval(sendIntervalMs);
 
@@ -61,4 +52,13 @@ public class SendBrevService {
     public void stopSending() {
         brevProdusent.stop();
     }
+
+    public String getStatus() {
+        return this.sendBrevStatus.getStatusString();
+    }
+
+    public String getQueueStatus() {
+        return this.sendBrevStatus.getQueueStatusString();
+    }
+
 }

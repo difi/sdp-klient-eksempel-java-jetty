@@ -9,6 +9,9 @@ import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
+/**
+ * Veldig enkel Resource for å kontrollere brevsending. Bruker GET heller enn POST for å gjøre det trivielt å bruke fra en nettleser.
+ */
 @Path("/")
 @ResourceFilters(NoCacheResponseFilter.class)
 public class BrevResource {
@@ -30,9 +33,17 @@ public class BrevResource {
     @GET
     @Path("stop")
     @Produces(TEXT_PLAIN)
-    public Response startSending() {
+    public Response stopSending() {
         sendBrevService.stopSending();
         return Response.ok("Ok, no longer sending").build();
+    }
+
+    @GET
+    @Path("receipt")
+    @Produces(TEXT_PLAIN)
+    public Response receipt() {
+        sendBrevService.pullReceipt();
+        return Response.ok("Ok, forced extra polling for receipts").build();
     }
 
     @GET

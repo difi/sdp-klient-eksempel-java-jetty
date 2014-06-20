@@ -15,6 +15,7 @@ public class SendBrevService {
     private final SikkerDigitalPostKlient klient;
     private final Forsendelseskilde forsendelseskilde;
     private final SendBrevStatus sendBrevStatus;
+    private final Thread kvitteringThread;
 
     private BrevProdusent brevProdusent;
 
@@ -38,7 +39,8 @@ public class SendBrevService {
         brevProdusent = new BrevProdusent(forsendelseskilde, klient, sendBrevStatus);
 
         // Alltid lytt på kvitteringer
-        new Thread(new HentKvittering(klient, sendBrevStatus), "ReceiptPollingThread").start();
+        kvitteringThread = new Thread(new HentKvittering(klient, sendBrevStatus), "ReceiptPollingThread");
+        kvitteringThread.start();
     }
 
     public void startSending(Integer sendIntervalMs) {
@@ -53,6 +55,10 @@ public class SendBrevService {
         brevProdusent.stop();
     }
 
+    public void pullReceipt() {
+        kvitteringThread.interrupt();
+    }
+
     public String getStatus() {
         return this.sendBrevStatus.getStatusString();
     }
@@ -60,5 +66,4 @@ public class SendBrevService {
     public String getQueueStatus() {
         return this.sendBrevStatus.getQueueStatusString();
     }
-
 }

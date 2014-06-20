@@ -21,15 +21,15 @@ public class BrevResource {
     }
 
     @GET
-    @Path("startSending")
+    @Path("start")
     @Produces(TEXT_PLAIN)
-    public Response startSending(@DefaultValue("1000") @QueryParam("sendInterval") Integer sendIntervalMs) {
+    public Response startSending(@DefaultValue("1000") @QueryParam("interval") Integer sendIntervalMs) {
         sendBrevService.startSending(sendIntervalMs);
         return Response.ok("Ok, sending every " + sendIntervalMs + "ms.").build();
     }
 
     @GET
-    @Path("stopSending")
+    @Path("stop")
     @Produces(TEXT_PLAIN)
     public Response startSending() {
         sendBrevService.stopSending();

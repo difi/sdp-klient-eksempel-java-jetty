@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class BrevSender implements Runnable {
+public class BrevProdusent implements Runnable {
 
     private final Forsendelseskilde forsendelseskilde;
     private final SikkerDigitalPostKlient klient;
@@ -22,7 +22,7 @@ public class BrevSender implements Runnable {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final ThreadPoolExecutor executor;
 
-    public BrevSender(Forsendelseskilde forsendelseskilde, SikkerDigitalPostKlient klient, SendBrevStatus sendBrevStatus) {
+    public BrevProdusent(Forsendelseskilde forsendelseskilde, SikkerDigitalPostKlient klient, SendBrevStatus sendBrevStatus) {
         this.forsendelseskilde = forsendelseskilde;
         this.klient = klient;
         this.sendBrevStatus = sendBrevStatus;

@@ -19,7 +19,7 @@ public class SendBrevService {
     private final SendBrevStatus sendBrevStatus;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private BrevSender brevSender;
+    private BrevProdusent brevProdusent;
 
     public SendBrevService() {
         Noekkelpar noekkelpar;
@@ -36,7 +36,7 @@ public class SendBrevService {
 
         forsendelseskilde = new Forsendelseskilde();
         sendBrevStatus = new SendBrevStatus();
-        brevSender = new BrevSender(forsendelseskilde, klient, sendBrevStatus);
+        brevProdusent = new BrevProdusent(forsendelseskilde, klient, sendBrevStatus);
 
         // Alltid lytt på kvitteringer
         new Thread(new HentKvittering(klient, sendBrevStatus), "ReceiptPollingThread").start();
@@ -51,14 +51,14 @@ public class SendBrevService {
     }
 
     public void startSending(Integer sendIntervalMs) {
-        brevSender.setSendInterval(sendIntervalMs);
+        brevProdusent.setSendInterval(sendIntervalMs);
 
-        if (!brevSender.isRunning()) {
-            new Thread(brevSender).start();
+        if (!brevProdusent.isRunning()) {
+            new Thread(brevProdusent, "LetterProducer").start();
         }
     }
 
     public void stopSending() {
-        brevSender.stop();
+        brevProdusent.stop();
     }
 }

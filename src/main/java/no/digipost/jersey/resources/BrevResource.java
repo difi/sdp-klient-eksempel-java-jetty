@@ -17,7 +17,6 @@ public class BrevResource {
 
     static {
         sendBrevService = new SendBrevService();
-        sendBrevService.start();
     }
 
     @GET

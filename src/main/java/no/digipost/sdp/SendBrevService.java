@@ -11,6 +11,9 @@ import java.security.KeyStore;
 
 public class SendBrevService {
 
+    private static final String MELDINGSFORMIDLER_URI = "https://qaoffentlig.meldingsformidler.digipost.no/api/ebms";
+    private static final String AVSENDER_ORGNUMMER = "991825827";
+
     private final SikkerDigitalPostKlient klient;
     private final Forsendelseskilde forsendelseskilde;
     private final SendBrevStatus sendBrevStatus;
@@ -29,16 +32,14 @@ public class SendBrevService {
             throw new RuntimeException("Unable to init keystore", e);
         }
 
-        klient = new SikkerDigitalPostKlient(Avsender.builder("991825827", noekkelpar).build(), KlientKonfigurasjon.builder().meldingsformidlerRoot("https://qaoffentlig.meldingsformidler.digipost.no/api/ebms").build());
+        klient = new SikkerDigitalPostKlient(Avsender.builder(AVSENDER_ORGNUMMER, noekkelpar).build(), KlientKonfigurasjon.builder().meldingsformidlerRoot(MELDINGSFORMIDLER_URI).build());
 
         forsendelseskilde = new Forsendelseskilde();
         sendBrevStatus = new SendBrevStatus();
         brevSender = new BrevSender(forsendelseskilde, klient, sendBrevStatus);
-    }
 
-    public void start() {
-        log.info("Starter kvitteringshenter");
-        new Thread(new HentKvittering(klient, sendBrevStatus)).start();
+        // Alltid lytt på kvitteringer
+        new Thread(new HentKvittering(klient, sendBrevStatus), "ReceiptPollingThread").start();
     }
 
     public String getStatus() {

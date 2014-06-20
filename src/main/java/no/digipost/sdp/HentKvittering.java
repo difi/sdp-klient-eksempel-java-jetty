@@ -7,9 +7,12 @@ import no.difi.sdp.client.domain.kvittering.KvitteringForespoersel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.TimeUnit;
+
 public class HentKvittering implements Runnable {
 
-    public static final int MILLIS_BETWEEN_RECEIPT_CHECKS_WHEN_EMPTY = 10000;
+    public static final int MILLIS_BETWEEN_RECEIPT_CHECKS_WHEN_EMPTY = (int) TimeUnit.MINUTES.toMillis(10);
+
     private final SikkerDigitalPostKlient klient;
     private final SendBrevStatus sendBrevStatus;
 

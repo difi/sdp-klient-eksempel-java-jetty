@@ -2,8 +2,8 @@ package no.digipost.sdp;
 
 import no.difi.sdp.client.KlientKonfigurasjon;
 import no.difi.sdp.client.SikkerDigitalPostKlient;
-import no.difi.sdp.client.domain.Avsender;
 import no.difi.sdp.client.domain.Noekkelpar;
+import no.difi.sdp.client.domain.TekniskAvsender;
 
 import java.security.KeyStore;
 
@@ -32,7 +32,7 @@ public class SendBrevService {
             throw new RuntimeException("Unable to init keystore", e);
         }
 
-        klient = new SikkerDigitalPostKlient(Avsender.builder(AVSENDER_ORGNUMMER, noekkelpar).avsenderIdentifikator("Difi testavsender").build(), KlientKonfigurasjon.builder().meldingsformidlerRoot(MELDINGSFORMIDLER_URI).build());
+        klient = new SikkerDigitalPostKlient(TekniskAvsender.builder(AVSENDER_ORGNUMMER, noekkelpar).build(), KlientKonfigurasjon.builder().meldingsformidlerRoot(MELDINGSFORMIDLER_URI).build());
 
         forsendelseskilde = new Forsendelseskilde();
         sendBrevStatus = new SendBrevStatus();

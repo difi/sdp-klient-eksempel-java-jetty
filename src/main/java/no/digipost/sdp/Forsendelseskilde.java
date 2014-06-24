@@ -23,9 +23,11 @@ public class Forsendelseskilde {
         // Mottaker fra kontaktregisteret
         Mottaker mottaker = Mottaker.builder("13013500002", "joni.sneve#63YM", mottakerSertifikat, "984661185").build();
 
+        Behandlingsansvarlig behandlingsansvarlig = Behandlingsansvarlig.builder("991825827").avsenderIdentifikator("Difi testavsender").build();
         DigitalPost testpost = DigitalPost.builder(mottaker, "Her er et testbrev!").sikkerhetsnivaa(NIVAA_3).build();
         Dokumentpakke dokumentpakke = Dokumentpakke.builder(Dokument.builder("Her er innholdet", new File("testbrev.pdf")).build()).build();
-        return Forsendelse.digital(testpost, dokumentpakke).konversasjonsId(konversasjonsId).build();
+
+        return Forsendelse.digital(behandlingsansvarlig, testpost, dokumentpakke).konversasjonsId(konversasjonsId).build();
     }
 
 }

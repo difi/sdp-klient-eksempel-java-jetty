@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>no.bekk</groupId>
 	<version>1.0-SNAPSHOT</version>
-	<artifactId>helloworld-java-app</artifactId>
+	<artifactId>sikker-digital-post-test-sender</artifactId>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

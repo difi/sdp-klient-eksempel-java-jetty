@@ -2,7 +2,7 @@ package no.digipost.sdp;
 
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Forsendelse;
-import no.digipost.sdp.send.SendBrev;
+import no.digipost.sdp.send.SendDigitalPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public class BrevProdusent implements Runnable {
             }
             else {
                 // Legg brev til sending
-                executor.submit(new SendBrev(klient, sendBrevStatus, forsendelse));
+                executor.submit(new SendDigitalPost(klient, sendBrevStatus, forsendelse));
                 sendBrevStatus.addedToQueue(forsendelse);
             }
 

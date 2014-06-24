@@ -6,7 +6,7 @@ import no.digipost.sdp.SendBrevStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SendBrev implements Runnable {
+public class SendDigitalPost implements Runnable {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -14,7 +14,7 @@ public class SendBrev implements Runnable {
     private final SendBrevStatus sendBrevStatus;
     private final Forsendelse forsendelse;
 
-    public SendBrev(SikkerDigitalPostKlient klient, SendBrevStatus sendBrevStatus, Forsendelse forsendelse) {
+    public SendDigitalPost(SikkerDigitalPostKlient klient, SendBrevStatus sendBrevStatus, Forsendelse forsendelse) {
         this.klient = klient;
         this.sendBrevStatus = sendBrevStatus;
         this.forsendelse = forsendelse;

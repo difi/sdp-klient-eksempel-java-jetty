@@ -1,4 +1,4 @@
-package no.digipost.sdp;
+package no.digipost.sdp.digitalpost;
 
 import no.difi.sdp.client.domain.*;
 import no.difi.sdp.client.domain.digital_post.DigitalPost;

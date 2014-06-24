@@ -4,6 +4,8 @@ import no.difi.sdp.client.KlientKonfigurasjon;
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Noekkelpar;
 import no.difi.sdp.client.domain.TekniskAvsender;
+import no.digipost.sdp.digitalpost.BrevProdusent;
+import no.digipost.sdp.digitalpost.Forsendelseskilde;
 import no.digipost.sdp.send.HentKvittering;
 
 import java.security.KeyStore;

@@ -1,7 +1,8 @@
-package no.digipost.sdp;
+package no.digipost.sdp.send;
 
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Forsendelse;
+import no.digipost.sdp.SendBrevStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

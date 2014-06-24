@@ -4,10 +4,11 @@ import no.difi.sdp.client.KlientKonfigurasjon;
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Noekkelpar;
 import no.difi.sdp.client.domain.TekniskAvsender;
+import no.digipost.sdp.send.HentKvittering;
 
 import java.security.KeyStore;
 
-public class SendBrevService {
+public class SDPService {
 
     private static final String MELDINGSFORMIDLER_URI = "https://qaoffentlig.meldingsformidler.digipost.no/api/ebms";
     private static final String AVSENDER_ORGNUMMER = "991825827";
@@ -19,7 +20,7 @@ public class SendBrevService {
 
     private BrevProdusent brevProdusent;
 
-    public SendBrevService() {
+    public SDPService() {
         Noekkelpar noekkelpar;
         try {
             KeyStore keyStore = KeyStore.getInstance("JCEKS");

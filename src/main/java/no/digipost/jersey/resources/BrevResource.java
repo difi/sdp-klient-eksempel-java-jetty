@@ -2,7 +2,7 @@ package no.digipost.jersey.resources;
 
 import com.sun.jersey.spi.container.ResourceFilters;
 import no.digipost.jersey.filters.NoCacheResponseFilter;
-import no.digipost.sdp.SendBrevService;
+import no.digipost.sdp.SDPService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -16,17 +16,17 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 @ResourceFilters(NoCacheResponseFilter.class)
 public class BrevResource {
 
-    private static final SendBrevService sendBrevService;
+    private static final SDPService SDP_SERVICE;
 
     static {
-        sendBrevService = new SendBrevService();
+        SDP_SERVICE = new SDPService();
     }
 
     @GET
     @Path("start")
     @Produces(TEXT_PLAIN)
     public Response startSending(@DefaultValue("1000") @QueryParam("interval") Integer sendIntervalMs) {
-        sendBrevService.startSending(sendIntervalMs);
+        SDP_SERVICE.startSending(sendIntervalMs);
         return Response.ok("Ok, sending every " + sendIntervalMs + "ms.").build();
     }
 
@@ -34,7 +34,7 @@ public class BrevResource {
     @Path("stop")
     @Produces(TEXT_PLAIN)
     public Response stopSending() {
-        sendBrevService.stopSending();
+        SDP_SERVICE.stopSending();
         return Response.ok("Ok, no longer sending").build();
     }
 
@@ -42,7 +42,7 @@ public class BrevResource {
     @Path("receipt")
     @Produces(TEXT_PLAIN)
     public Response receipt() {
-        sendBrevService.pullReceipt();
+        SDP_SERVICE.pullReceipt();
         return Response.ok("Ok, forced extra polling for receipts").build();
     }
 
@@ -50,14 +50,14 @@ public class BrevResource {
     @Path("status")
     @Produces(TEXT_PLAIN)
     public Response status() {
-        return Response.ok(sendBrevService.getStatus()).build();
+        return Response.ok(SDP_SERVICE.getStatus()).build();
     }
 
     @GET
     @Path("queue")
     @Produces(TEXT_PLAIN)
     public Response queue() {
-        return Response.ok(sendBrevService.getQueueStatus()).build();
+        return Response.ok(SDP_SERVICE.getQueueStatus()).build();
     }
 
 }

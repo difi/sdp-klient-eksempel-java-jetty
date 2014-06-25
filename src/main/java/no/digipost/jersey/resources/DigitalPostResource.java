@@ -14,7 +14,7 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
  */
 @Path("/")
 @ResourceFilters(NoCacheResponseFilter.class)
-public class BrevResource {
+public class DigitalPostResource {
 
     private static final SDPService SDP_SERVICE;
 

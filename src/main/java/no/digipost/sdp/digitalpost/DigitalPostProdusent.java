@@ -51,10 +51,9 @@ public class DigitalPostProdusent implements Runnable {
             }
             else {
                 // Legg brev til sending
+                executor.submit(new SendDigitalPost(klient, sdpStatus, forsendelse));
                 sdpStatus.addedToQueue(forsendelse);
                 log.info("[" + forsendelse.getKonversasjonsId() + "] added to send queue");
-
-                executor.submit(new SendDigitalPost(klient, sdpStatus, forsendelse));
             }
 
             try {

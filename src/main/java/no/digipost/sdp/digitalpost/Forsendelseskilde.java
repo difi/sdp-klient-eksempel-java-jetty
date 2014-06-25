@@ -21,6 +21,7 @@ public class Forsendelseskilde {
         String konversasjonsId = "konversasjonsid-" + new DateTime().toString("yyyyMMdd-HHmmssSSS");
 
         // Mottaker fra kontaktregisteret
+        //todo: eksempel med oppslag mot kontaktregisteret
         Mottaker mottaker = Mottaker.builder("13013500002", "joni.sneve#63YM", mottakerSertifikat, "984661185").build();
 
         Behandlingsansvarlig behandlingsansvarlig = Behandlingsansvarlig.builder("991825827").avsenderIdentifikator("Difi testavsender").build();

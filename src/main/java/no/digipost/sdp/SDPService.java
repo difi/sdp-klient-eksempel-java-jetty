@@ -4,7 +4,7 @@ import no.difi.sdp.client.KlientKonfigurasjon;
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Noekkelpar;
 import no.difi.sdp.client.domain.TekniskAvsender;
-import no.digipost.sdp.digitalpost.BrevProdusent;
+import no.digipost.sdp.digitalpost.DigitalPostProdusent;
 import no.digipost.sdp.digitalpost.Forsendelseskilde;
 import no.digipost.sdp.send.HentKvittering;
 
@@ -17,10 +17,10 @@ public class SDPService {
 
     private final SikkerDigitalPostKlient klient;
     private final Forsendelseskilde forsendelseskilde;
-    private final SendBrevStatus sendBrevStatus;
+    private final SDPStatus sdpStatus;
     private final Thread kvitteringThread;
 
-    private BrevProdusent brevProdusent;
+    private DigitalPostProdusent digitalPostProdusent;
 
     public SDPService() {
         Noekkelpar noekkelpar;
@@ -38,24 +38,24 @@ public class SDPService {
         klient = new SikkerDigitalPostKlient(TekniskAvsender.builder(AVSENDER_ORGNUMMER, noekkelpar).build(), KlientKonfigurasjon.builder().meldingsformidlerRoot(MELDINGSFORMIDLER_URI).build());
 
         forsendelseskilde = new Forsendelseskilde();
-        sendBrevStatus = new SendBrevStatus();
-        brevProdusent = new BrevProdusent(forsendelseskilde, klient, sendBrevStatus);
+        sdpStatus = new SDPStatus();
+        digitalPostProdusent = new DigitalPostProdusent(forsendelseskilde, klient, sdpStatus);
 
         // Alltid lytt på kvitteringer
-        kvitteringThread = new Thread(new HentKvittering(klient, sendBrevStatus), "ReceiptPollingThread");
+        kvitteringThread = new Thread(new HentKvittering(klient, sdpStatus), "ReceiptPollingThread");
         kvitteringThread.start();
     }
 
     public void startSending(Integer sendIntervalMs) {
-        brevProdusent.setSendInterval(sendIntervalMs);
+        digitalPostProdusent.setSendInterval(sendIntervalMs);
 
-        if (!brevProdusent.isRunning()) {
-            new Thread(brevProdusent, "LetterProducer").start();
+        if (!digitalPostProdusent.isRunning()) {
+            new Thread(digitalPostProdusent, "LetterProducer").start();
         }
     }
 
     public void stopSending() {
-        brevProdusent.stop();
+        digitalPostProdusent.stop();
     }
 
     public void pullReceipt() {
@@ -63,10 +63,10 @@ public class SDPService {
     }
 
     public String getStatus() {
-        return this.sendBrevStatus.getStatusString();
+        return this.sdpStatus.getStatusString();
     }
 
     public String getQueueStatus() {
-        return this.sendBrevStatus.getQueueStatusString();
+        return this.sdpStatus.getQueueStatusString();
     }
 }

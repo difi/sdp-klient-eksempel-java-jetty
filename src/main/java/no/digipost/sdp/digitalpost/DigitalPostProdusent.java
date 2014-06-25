@@ -2,24 +2,22 @@ package no.digipost.sdp.digitalpost;
 
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Forsendelse;
-import no.digipost.sdp.SendBrevStatus;
+import no.digipost.sdp.SDPStatus;
 import no.digipost.sdp.send.SendDigitalPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Putter jobber i en kø for sending. Bør ha mekanismer for å sørge for å ikke produsere brev fortere enn de sendes.
  */
-public class BrevProdusent implements Runnable {
+public class DigitalPostProdusent implements Runnable {
 
     private final Forsendelseskilde forsendelseskilde;
     private final SikkerDigitalPostKlient klient;
-    private final SendBrevStatus sendBrevStatus;
-    private final LinkedBlockingQueue<Runnable> workQueue;
+    private final SDPStatus sdpStatus;
 
     private int sendInterval = 1000;
     private boolean running = false;
@@ -27,15 +25,12 @@ public class BrevProdusent implements Runnable {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final ThreadPoolExecutor executor;
 
-    public BrevProdusent(Forsendelseskilde forsendelseskilde, SikkerDigitalPostKlient klient, SendBrevStatus sendBrevStatus) {
+    public DigitalPostProdusent(Forsendelseskilde forsendelseskilde, SikkerDigitalPostKlient klient, SDPStatus sdpStatus) {
         this.forsendelseskilde = forsendelseskilde;
         this.klient = klient;
-        this.sendBrevStatus = sendBrevStatus;
+        this.sdpStatus = sdpStatus;
 
-        workQueue = new LinkedBlockingQueue<>(100);
-        executor = new ThreadPoolExecutor(1, 10, 1, TimeUnit.MINUTES, workQueue);
-
-        sendBrevStatus.sendQueue(workQueue);
+        executor = new ThreadPoolExecutor(1, 10, 1, TimeUnit.MINUTES, sdpStatus.getQueue());
     }
 
     @Override
@@ -49,14 +44,17 @@ public class BrevProdusent implements Runnable {
             // Hent forsendelse
             Forsendelse forsendelse = forsendelseskilde.lagBrev();
 
-            if (workQueue.remainingCapacity() == 0) {
+            if (sdpStatus.getQueue().remainingCapacity() == 0) {
                 // Håndter eventuelt full kø
-                sendBrevStatus.notSentDueToCapacity(forsendelse);
+                sdpStatus.notSentDueToCapacity(forsendelse);
+                log.warn("[" + forsendelse.getKonversasjonsId() + "] not sent due to full queue");
             }
             else {
                 // Legg brev til sending
-                executor.submit(new SendDigitalPost(klient, sendBrevStatus, forsendelse));
-                sendBrevStatus.addedToQueue(forsendelse);
+                sdpStatus.addedToQueue(forsendelse);
+                log.info("[" + forsendelse.getKonversasjonsId() + "] added to send queue");
+
+                executor.submit(new SendDigitalPost(klient, sdpStatus, forsendelse));
             }
 
             try {

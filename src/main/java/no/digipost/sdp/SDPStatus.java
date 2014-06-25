@@ -9,25 +9,26 @@ import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Ekstremt forenklet håndtering av status på brevsending.
+ * Ekstremt forenklet håndtering av status på sending av digital post.
  *
- * I en reell brevsender vil dette være en nøkkelkomponent som håndterer alt rundt resultatet av sending av brev.
+ * I en reell sender vil dette være en nøkkelkomponent som håndterer alt rundt resultatet av sending av digital post.
  * Dette vil typisk inkludere oppdatering av status i database/fagsystem, automatisk feilhåndtering, rapportering til
  * manuell feilhåndtering og så videre.
  *
  * Se <a href="http://begrep.difi.no/SikkerDigitalPost/forretningslag/avsender_tilstanddiagram">mulig tilstandsdiagram</a> for forsendelser.
  */
-public class SendBrevStatus {
+public class SDPStatus {
 
     private final HashMap<String, String> status;
-    private LinkedBlockingQueue<Runnable> queue;
+    private final LinkedBlockingQueue<Runnable> queue;
 
-    public SendBrevStatus() {
+    public SDPStatus() {
         status = new LinkedHashMap<>();
+        queue = new LinkedBlockingQueue<>(100);
     }
 
-    public void sendQueue(LinkedBlockingQueue<Runnable> queue) {
-        this.queue = queue;
+    public LinkedBlockingQueue<Runnable> getQueue() {
+        return queue;
     }
 
     /**

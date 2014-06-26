@@ -20,15 +20,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class SDPStatus {
 
     private final HashMap<String, String> status;
-    private final LinkedBlockingQueue<Runnable> queue;
+    private LinkedBlockingQueue<Runnable> queue;
 
     public SDPStatus() {
         status = new LinkedHashMap<>();
-        queue = new LinkedBlockingQueue<>(100);
-    }
-
-    public LinkedBlockingQueue<Runnable> getQueue() {
-        return queue;
     }
 
     /**
@@ -86,6 +81,10 @@ public class SDPStatus {
     }
 
     public String getQueueStatusString() {
+        if (queue == null) {
+            return "Unable to check queue size, queue is not set.";
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Number of elements in queue: ").append(this.queue.size()).append("\n")
                              .append("Remaining capacity: ")         .append(this.queue.remainingCapacity()).append("\n\n");
@@ -95,6 +94,10 @@ public class SDPStatus {
         }
 
         return stringBuilder.toString();
+    }
+
+    public void setQueue(LinkedBlockingQueue<Runnable> queue) {
+        this.queue = queue;
     }
 
 }

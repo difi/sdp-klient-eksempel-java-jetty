@@ -7,6 +7,7 @@ import no.digipost.sdp.send.SendDigitalPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -24,13 +25,16 @@ public class DigitalPostProdusent implements Runnable {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final ThreadPoolExecutor executor;
+    private final LinkedBlockingQueue<Runnable> queue;
 
     public DigitalPostProdusent(Forsendelseskilde forsendelseskilde, SikkerDigitalPostKlient klient, SDPStatus sdpStatus) {
         this.forsendelseskilde = forsendelseskilde;
         this.klient = klient;
         this.sdpStatus = sdpStatus;
 
-        executor = new ThreadPoolExecutor(1, 10, 1, TimeUnit.MINUTES, sdpStatus.getQueue());
+        this.queue = new LinkedBlockingQueue<>(100);
+        this.executor = new ThreadPoolExecutor(1, 10, 1, TimeUnit.MINUTES, queue);
+        this.sdpStatus.setQueue(queue);
     }
 
     @Override
@@ -44,7 +48,7 @@ public class DigitalPostProdusent implements Runnable {
             // Hent forsendelse
             Forsendelse forsendelse = forsendelseskilde.lagBrev();
 
-            if (sdpStatus.getQueue().remainingCapacity() == 0) {
+            if (queue.remainingCapacity() == 0) {
                 // Håndter eventuelt full kø
                 sdpStatus.notSentDueToCapacity(forsendelse);
                 log.warn("[" + forsendelse.getKonversasjonsId() + "] not sent due to full queue");

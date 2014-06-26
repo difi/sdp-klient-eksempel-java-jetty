@@ -13,7 +13,7 @@ Det kan derfor være hensiktsmessig å gjøre sending av digital post i en egen 
 Oppsett
 -------
 
-For å kunne kjøre testkoden må det konfigureres opp et keystore med et gyldig avsendersertifikat. Navn på keystore, samt alias og passord, settes i `SDPService.java`.
+For å kunne kjøre testkoden må det konfigureres opp en keystore med gyldig avsendersertifikat. Navn på keystore, samt alias og passord, settes i `SDPService.java`.
 
 Eksempelapplikasjonen baserer seg på en embedded jetty-server. Serveren kan startes opp med kjøre main-metoden i `WebServerMain` eller med maven: `mvn clean compile exec:java`.
 
@@ -24,7 +24,7 @@ Endpointet ligger i `DigitalPostResource`.
 * `/stop` pauser sending av post.
 * `/status` henter ut status for sendte brev.
 * `/queue` viser status for køen over produserte brev som skal sendes til meldingsformidler.
-* `/receipt` tvinger frem henting av kvitteringer. Normalt hentes kvitteringer hvert tiende minutt.
+* `/receipt` tvinger frem umiddelbar henting av kvitteringer. Normalt hentes kvitteringer hvert tiende minutt.
 
 Struktur
 --------

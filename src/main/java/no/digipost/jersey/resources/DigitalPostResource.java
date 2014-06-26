@@ -16,17 +16,17 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 @ResourceFilters(NoCacheResponseFilter.class)
 public class DigitalPostResource {
 
-    private static final SDPService SDP_SERVICE;
+    private final SDPService sdpService;
 
-    static {
-        SDP_SERVICE = new SDPService();
+    public DigitalPostResource() {
+        this.sdpService = new SDPService();
     }
 
     @GET
     @Path("start")
     @Produces(TEXT_PLAIN)
     public Response startSending(@DefaultValue("1000") @QueryParam("interval") Integer sendIntervalMs) {
-        SDP_SERVICE.startSending(sendIntervalMs);
+        sdpService.startSending(sendIntervalMs);
         return Response.ok("Ok, sending every " + sendIntervalMs + "ms.").build();
     }
 
@@ -34,7 +34,7 @@ public class DigitalPostResource {
     @Path("stop")
     @Produces(TEXT_PLAIN)
     public Response stopSending() {
-        SDP_SERVICE.stopSending();
+        sdpService.stopSending();
         return Response.ok("Ok, no longer sending").build();
     }
 
@@ -42,7 +42,7 @@ public class DigitalPostResource {
     @Path("receipt")
     @Produces(TEXT_PLAIN)
     public Response receipt() {
-        SDP_SERVICE.pullReceipt();
+        sdpService.pullReceipt();
         return Response.ok("Ok, forced extra polling for receipts").build();
     }
 
@@ -50,14 +50,14 @@ public class DigitalPostResource {
     @Path("status")
     @Produces(TEXT_PLAIN)
     public Response status() {
-        return Response.ok(SDP_SERVICE.getStatus()).build();
+        return Response.ok(sdpService.getStatus()).build();
     }
 
     @GET
     @Path("queue")
     @Produces(TEXT_PLAIN)
     public Response queue() {
-        return Response.ok(SDP_SERVICE.getQueueStatus()).build();
+        return Response.ok(sdpService.getQueueStatus()).build();
     }
 
 }

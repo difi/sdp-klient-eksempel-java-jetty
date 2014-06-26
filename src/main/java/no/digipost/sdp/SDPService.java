@@ -1,5 +1,7 @@
 package no.digipost.sdp;
 
+import no.difi.kontaktinfo.wsdl.oppslagstjeneste_14_05.Oppslagstjeneste1405;
+import no.difi.kontaktregister.external.client.cxf.WSS4JInterceptorHelper;
 import no.difi.sdp.client.KlientKonfigurasjon;
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Noekkelpar;
@@ -7,6 +9,7 @@ import no.difi.sdp.client.domain.TekniskAvsender;
 import no.digipost.sdp.digitalpost.DigitalPostProdusent;
 import no.digipost.sdp.digitalpost.Forsendelseskilde;
 import no.digipost.sdp.send.HentKvittering;
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 
 import java.security.KeyStore;
 
@@ -17,6 +20,7 @@ public class SDPService {
 
     private final SikkerDigitalPostKlient klient;
     private final Forsendelseskilde forsendelseskilde;
+    private final Oppslagstjeneste1405 oppslagstjeneste;
     private final SDPStatus sdpStatus;
     private final Thread kvitteringThread;
 
@@ -37,7 +41,8 @@ public class SDPService {
 
         klient = new SikkerDigitalPostKlient(TekniskAvsender.builder(AVSENDER_ORGNUMMER, noekkelpar).build(), KlientKonfigurasjon.builder().meldingsformidlerRoot(MELDINGSFORMIDLER_URI).build());
 
-        forsendelseskilde = new Forsendelseskilde();
+        oppslagstjeneste = hentOppslagstjeneste();
+        forsendelseskilde = new Forsendelseskilde(oppslagstjeneste);
         sdpStatus = new SDPStatus();
         digitalPostProdusent = new DigitalPostProdusent(forsendelseskilde, klient, sdpStatus);
 
@@ -68,5 +73,21 @@ public class SDPService {
 
     public String getQueueStatus() {
         return this.sdpStatus.getQueueStatusString();
+    }
+
+    private Oppslagstjeneste1405 hentOppslagstjeneste() {
+        String serviceAddress = System.getProperty("kontaktinfo.address.location");
+        if(serviceAddress == null) {
+            serviceAddress = "https://kontaktinfo-ws-ver2.difi.no/kontaktinfo-external/ws-v3";
+        }
+
+        // Enables running against alternative endpoints to the one specified in the WSDL
+        JaxWsProxyFactoryBean jaxWsProxyFactoryBean = new JaxWsProxyFactoryBean();
+        jaxWsProxyFactoryBean.setServiceClass(Oppslagstjeneste1405.class);
+        jaxWsProxyFactoryBean.setAddress(serviceAddress);
+
+        // Configures WS-Security
+        WSS4JInterceptorHelper.addWSS4JInterceptors(jaxWsProxyFactoryBean);
+        return (Oppslagstjeneste1405) jaxWsProxyFactoryBean.create();
     }
 }

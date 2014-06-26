@@ -44,26 +44,27 @@ public class DigitalPostProdusent implements Runnable {
         }
 
         running = true;
-        while(running) {
+        while (running) {
             // Hent forsendelse
             Forsendelse forsendelse = forsendelseskilde.lagBrev();
 
-            if (queue.remainingCapacity() == 0) {
-                // Håndter eventuelt full kø
-                sdpStatus.notSentDueToCapacity(forsendelse);
-                log.warn("[" + forsendelse.getKonversasjonsId() + "] not sent due to full queue");
-            }
-            else {
-                // Legg brev til sending
-                executor.submit(new SendDigitalPost(klient, sdpStatus, forsendelse));
-                sdpStatus.addedToQueue(forsendelse);
-                log.info("[" + forsendelse.getKonversasjonsId() + "] added to send queue");
-            }
+            if (forsendelse != null) {
+                if (queue.remainingCapacity() == 0) {
+                    // Håndter eventuelt full kø
+                    sdpStatus.notSentDueToCapacity(forsendelse);
+                    log.warn("[" + forsendelse.getKonversasjonsId() + "] not sent due to full queue");
+                } else {
+                    // Legg brev til sending
+                    executor.submit(new SendDigitalPost(klient, sdpStatus, forsendelse));
+                    sdpStatus.addedToQueue(forsendelse);
+                    log.info("[" + forsendelse.getKonversasjonsId() + "] added to send queue");
+                }
 
-            try {
-                Thread.sleep(sendInterval);
-            } catch (InterruptedException e) {
-                log.warn("Awoken from sleep. Jobs will arrive quickly!");
+                try {
+                    Thread.sleep(sendInterval);
+                } catch (InterruptedException e) {
+                    log.warn("Awoken from sleep. Jobs will arrive quickly!");
+                }
             }
         }
     }

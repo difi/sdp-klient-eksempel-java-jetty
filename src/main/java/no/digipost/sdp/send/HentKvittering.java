@@ -1,9 +1,10 @@
-package no.digipost.sdp;
+package no.digipost.sdp.send;
 
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Prioritet;
 import no.difi.sdp.client.domain.kvittering.ForretningsKvittering;
 import no.difi.sdp.client.domain.kvittering.KvitteringForespoersel;
+import no.digipost.sdp.SDPStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,13 +22,13 @@ public class HentKvittering implements Runnable {
     public static final Prioritet MPC_PRIORITY = Prioritet.NORMAL;
 
     private final SikkerDigitalPostKlient klient;
-    private final SendBrevStatus sendBrevStatus;
+    private final SDPStatus sdpStatus;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public HentKvittering(SikkerDigitalPostKlient klient, SendBrevStatus sendBrevStatus) {
+    public HentKvittering(SikkerDigitalPostKlient klient, SDPStatus sdpStatus) {
         this.klient = klient;
-        this.sendBrevStatus = sendBrevStatus;
+        this.sdpStatus = sdpStatus;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class HentKvittering implements Runnable {
         ForretningsKvittering forretningsKvittering = klient.hentKvitteringOgBekreftForrige(KvitteringForespoersel.builder(MPC_PRIORITY).build(), forrigeKvittering);
 
         if (forretningsKvittering != null) {
-            sendBrevStatus.kvittering(forretningsKvittering);
+            sdpStatus.kvittering(forretningsKvittering);
         }
         else {
             try {

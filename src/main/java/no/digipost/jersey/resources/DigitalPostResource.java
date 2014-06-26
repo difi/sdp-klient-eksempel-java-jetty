@@ -2,7 +2,7 @@ package no.digipost.jersey.resources;
 
 import com.sun.jersey.spi.container.ResourceFilters;
 import no.digipost.jersey.filters.NoCacheResponseFilter;
-import no.digipost.sdp.SendBrevService;
+import no.digipost.sdp.SDPService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -14,19 +14,19 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
  */
 @Path("/")
 @ResourceFilters(NoCacheResponseFilter.class)
-public class BrevResource {
+public class DigitalPostResource {
 
-    private static final SendBrevService sendBrevService;
+    private final SDPService sdpService;
 
-    static {
-        sendBrevService = new SendBrevService();
+    public DigitalPostResource() {
+        this.sdpService = new SDPService();
     }
 
     @GET
     @Path("start")
     @Produces(TEXT_PLAIN)
     public Response startSending(@DefaultValue("1000") @QueryParam("interval") Integer sendIntervalMs) {
-        sendBrevService.startSending(sendIntervalMs);
+        sdpService.startSending(sendIntervalMs);
         return Response.ok("Ok, sending every " + sendIntervalMs + "ms.").build();
     }
 
@@ -34,7 +34,7 @@ public class BrevResource {
     @Path("stop")
     @Produces(TEXT_PLAIN)
     public Response stopSending() {
-        sendBrevService.stopSending();
+        sdpService.stopSending();
         return Response.ok("Ok, no longer sending").build();
     }
 
@@ -42,7 +42,7 @@ public class BrevResource {
     @Path("receipt")
     @Produces(TEXT_PLAIN)
     public Response receipt() {
-        sendBrevService.pullReceipt();
+        sdpService.pullReceipt();
         return Response.ok("Ok, forced extra polling for receipts").build();
     }
 
@@ -50,14 +50,14 @@ public class BrevResource {
     @Path("status")
     @Produces(TEXT_PLAIN)
     public Response status() {
-        return Response.ok(sendBrevService.getStatus()).build();
+        return Response.ok(sdpService.getStatus()).build();
     }
 
     @GET
     @Path("queue")
     @Produces(TEXT_PLAIN)
     public Response queue() {
-        return Response.ok(sendBrevService.getQueueStatus()).build();
+        return Response.ok(sdpService.getQueueStatus()).build();
     }
 
 }

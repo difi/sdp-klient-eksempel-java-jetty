@@ -16,10 +16,14 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 @ResourceFilters(NoCacheResponseFilter.class)
 public class DigitalPostResource {
 
-    private final SDPService sdpService;
+    private static final SDPService sdpService;
 
-    public DigitalPostResource() {
-        this.sdpService = new SDPService();
+    /**
+     * Må være static slik at vi får singleton av {@link no.digipost.sdp.SDPService}.
+     * Blir ellers krøll med kø og status for sending.
+     */
+    static {
+        sdpService = new SDPService();
     }
 
     @GET

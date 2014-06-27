@@ -1,4 +1,4 @@
-package no.digipost.sdp.digitalpost;
+package no.difi.sdp.digitalpost;
 
 public class PersonNotFoundException extends RuntimeException {
 }

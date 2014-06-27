@@ -1,4 +1,4 @@
-package no.digipost.sdp;
+package no.difi.sdp;
 
 import no.difi.sdp.client.domain.Forsendelse;
 import no.difi.sdp.client.domain.kvittering.ForretningsKvittering;

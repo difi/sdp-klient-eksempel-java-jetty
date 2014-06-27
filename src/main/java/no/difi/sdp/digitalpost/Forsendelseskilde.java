@@ -1,4 +1,4 @@
-package no.digipost.sdp.digitalpost;
+package no.difi.sdp.digitalpost;
 
 import no.difi.begrep.Person;
 import no.difi.kontaktinfo.wsdl.oppslagstjeneste_14_05.Oppslagstjeneste1405;

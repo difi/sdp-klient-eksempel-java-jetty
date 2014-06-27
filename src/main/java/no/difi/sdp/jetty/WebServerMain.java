@@ -1,4 +1,4 @@
-package no.digipost.jetty;
+package no.difi.sdp.jetty;
 
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import org.eclipse.jetty.server.Server;

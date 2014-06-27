@@ -1,4 +1,4 @@
-package no.digipost.sdp;
+package no.difi.sdp;
 
 import no.difi.kontaktinfo.wsdl.oppslagstjeneste_14_05.Oppslagstjeneste1405;
 import no.difi.kontaktregister.external.client.cxf.WSS4JInterceptorHelper;
@@ -6,9 +6,9 @@ import no.difi.sdp.client.KlientKonfigurasjon;
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Noekkelpar;
 import no.difi.sdp.client.domain.TekniskAvsender;
-import no.digipost.sdp.digitalpost.DigitalPostProdusent;
-import no.digipost.sdp.digitalpost.Forsendelseskilde;
-import no.digipost.sdp.send.HentKvittering;
+import no.difi.sdp.digitalpost.DigitalPostProdusent;
+import no.difi.sdp.digitalpost.Forsendelseskilde;
+import no.difi.sdp.send.HentKvittering;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 
 import java.security.KeyStore;

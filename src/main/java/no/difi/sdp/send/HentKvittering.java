@@ -1,10 +1,10 @@
-package no.digipost.sdp.send;
+package no.difi.sdp.send;
 
+import no.difi.sdp.SDPStatus;
 import no.difi.sdp.client.SikkerDigitalPostKlient;
 import no.difi.sdp.client.domain.Prioritet;
 import no.difi.sdp.client.domain.kvittering.ForretningsKvittering;
 import no.difi.sdp.client.domain.kvittering.KvitteringForespoersel;
-import no.digipost.sdp.SDPStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

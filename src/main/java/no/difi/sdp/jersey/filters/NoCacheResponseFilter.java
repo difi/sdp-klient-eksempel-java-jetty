@@ -1,4 +1,4 @@
-package no.digipost.jersey.filters;
+package no.difi.sdp.jersey.filters;
 
 import com.sun.jersey.spi.container.*;
 

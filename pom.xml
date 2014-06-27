@@ -109,7 +109,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>no.digipost.jetty.WebServerMain</mainClass>
+							<mainClass>no.difi.sdp.jetty.WebServerMain</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -131,7 +131,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1</version>
 				<configuration>
-					<mainClass>no.digipost.jetty.WebServerMain</mainClass>
+					<mainClass>no.difi.sdp.jetty.WebServerMain</mainClass>
 				</configuration>
 			</plugin>
             <plugin>

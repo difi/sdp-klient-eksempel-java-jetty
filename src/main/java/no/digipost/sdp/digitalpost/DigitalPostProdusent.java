@@ -46,9 +46,9 @@ public class DigitalPostProdusent implements Runnable {
         running = true;
         while (running) {
             // Hent forsendelse
-            Forsendelse forsendelse = forsendelseskilde.lagBrev();
+            try {
+                Forsendelse forsendelse = forsendelseskilde.lagBrev();
 
-            if (forsendelse != null) {
                 if (queue.remainingCapacity() == 0) {
                     // Håndter eventuelt full kø
                     sdpStatus.notSentDueToCapacity(forsendelse);
@@ -59,12 +59,16 @@ public class DigitalPostProdusent implements Runnable {
                     sdpStatus.addedToQueue(forsendelse);
                     log.info("[" + forsendelse.getKonversasjonsId() + "] added to send queue");
                 }
+            }
+            catch (PersonNotFoundException e) {
+                // Hvis en person ikke finnes i kontaktregisteret eller kontaktregisteret ikke gir et gyldig svar må det gjøre alternativ håndtering, typisk print.
+                log.warn("Kunne ikke lage digital post til mottakeren: mottakeren er ikke registrert i kontaktregisteret");
+            }
 
-                try {
-                    Thread.sleep(sendInterval);
-                } catch (InterruptedException e) {
-                    log.warn("Awoken from sleep. Jobs will arrive quickly!");
-                }
+            try {
+                Thread.sleep(sendInterval);
+            } catch (InterruptedException e) {
+                log.warn("Awoken from sleep. Jobs will arrive quickly!");
             }
         }
     }

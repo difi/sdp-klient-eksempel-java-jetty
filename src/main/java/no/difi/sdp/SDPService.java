@@ -11,12 +11,16 @@ import no.difi.sdp.digitalpost.Forsendelseskilde;
 import no.difi.sdp.send.HentKvittering;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 
+import java.io.InputStream;
 import java.security.KeyStore;
+
+import static org.apache.commons.lang3.Validate.notNull;
 
 public class SDPService {
 
     private static final String MELDINGSFORMIDLER_URI = "https://qaoffentlig.meldingsformidler.digipost.no/api/ebms";
     private static final String AVSENDER_ORGNUMMER = "991825827";
+    private static final String KEYSTORE_RESOURCE_NAME = "/keystore.jce";
 
     private final SikkerDigitalPostKlient klient;
     private final Forsendelseskilde forsendelseskilde;
@@ -28,11 +32,13 @@ public class SDPService {
 
     public SDPService() {
         Noekkelpar noekkelpar;
+        InputStream keystoreResource = notNull(this.getClass().getResourceAsStream(KEYSTORE_RESOURCE_NAME),
+        		"The keystore file " + KEYSTORE_RESOURCE_NAME + " does not exist. How to create a keystore is described here: https://github.com/difi/sikker-digital-post-java-klient#sertifikater");
         try {
             KeyStore keyStore = KeyStore.getInstance("JCEKS");
 
             // Last keystore som inneholder sertifikatkjede og privatnøkkel for avsender, samt eventuelt trust store for rotsertifikat brukt av meldingsformidler.
-            keyStore.load(this.getClass().getClassLoader().getResourceAsStream("./keystore.jce"), "abcd1234".toCharArray());
+			keyStore.load(keystoreResource, "abcd1234".toCharArray());
             noekkelpar = Noekkelpar.fraKeyStore(keyStore, "meldingsformidler", "abcd1234");
         }
         catch (Exception e) {

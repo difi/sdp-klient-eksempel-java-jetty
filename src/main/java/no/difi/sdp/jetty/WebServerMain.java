@@ -6,12 +6,13 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.io.IOException;
 
 public class WebServerMain {
 
-    private static Logger LOG = LoggerFactory.getLogger(WebServerMain.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WebServerMain.class);
 
 	private static final int SERVER_PORT = 1234;
 
@@ -31,6 +32,11 @@ public class WebServerMain {
 		} catch (Exception e) {
 			LOG.error("Kunne ikke starte server!", e);
 		}
+	}
+
+	static {
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		SLF4JBridgeHandler.install();
 	}
 
 }

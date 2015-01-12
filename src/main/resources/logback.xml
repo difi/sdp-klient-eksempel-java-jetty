@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<resetJUL>true</resetJUL>
+	</contextListener>
+
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>%d{yyyy.MM.dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n
@@ -10,7 +14,7 @@
 
 	<logger name="no.difi.sdp.client" level="WARN" />
 	<logger name="no.digipost.api.MessageSender" level="WARN" />
-	<logger name="mf.logger.translog" level="WARN" />
+	<logger name="mf.logger.translog" level="INFO" />
 	<logger name="no.difi" level="TRACE" />
 
 

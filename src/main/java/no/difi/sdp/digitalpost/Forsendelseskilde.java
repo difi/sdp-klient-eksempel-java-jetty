@@ -7,10 +7,10 @@ import no.difi.kontaktinfo.xsd.oppslagstjeneste._14_05.HentPersonerRespons;
 import no.difi.kontaktinfo.xsd.oppslagstjeneste._14_05.Informasjonsbehov;
 import no.difi.sdp.client.domain.*;
 import no.difi.sdp.client.domain.digital_post.DigitalPost;
-import org.joda.time.DateTime;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static no.difi.sdp.client.domain.digital_post.Sikkerhetsnivaa.NIVAA_3;
 
@@ -28,7 +28,7 @@ public class Forsendelseskilde {
      * og bygge forsendelsen.
      */
     public Forsendelse lagBrev() {
-        String konversasjonsId = "konversasjonsid-" + new DateTime().toString("yyyyMMdd-HHmmssSSS");
+        String konversasjonsId = UUID.randomUUID().toString();
 
         Mottaker mottaker = hentMottaker("04036125433");
 
